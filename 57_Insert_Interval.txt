@@ -1,0 +1,59 @@
+
+
+// tc-O(nlog n) sc-O(n)
+class Solution {
+      public int[][] merge(int[][] intervals) {
+        int n=intervals.length;
+        int m=intervals[0].length;
+        // we have to return as a 2D array
+        // so we cann't do directly so create array and add int[] type array
+        // if we know how many elemt hae to add we use " new int[]{} "
+       ArrayList<int[]> list= new ArrayList<>();
+       // here we sorting starting elemts because we have to check prev_end and curr_start
+       Arrays.sort(intervals,(a,b)-> Integer.compare(a[0],b[0]));
+       // we comparing that starting elmnt with rest of all 
+        int ps=intervals[0][0];
+        int pe=intervals[0][1];
+       for(int i=1;i<n;i++){
+        int cs=intervals[i][0];
+        int ce=intervals[i][1];
+        // if prev_end >= curr_start it mean they can overlap
+           if(cs<=pe){
+            // so we updating max of prev_end && curr_end
+            pe=Math.max(pe,ce);
+           }
+           else{
+            // before we are not adding just checking condition so now we adding the  overlapping elemts
+// here we ending prev_start and prev_end  " not current elemts"
+
+            list.add(new int[]{ps,pe});
+            // here we updating with current elemts here we not adding
+            // in next loop we check and if the condition not true then we add and update with present elmts
+            ps=cs;
+            pe=ce;
+           }
+       }
+       // everytime we add prevs and updates currents at the end the loop will stop when it reach to last elemts
+       // they not add
+       // so for that last elemts .. we add at last
+       list.add(new int[]{ps,pe});
+       // we know that to chenge anything to string we use " .toString"
+       // like that here we using toArray
+       // and here we adding 2D int[][] type 
+      return list.toArray(new int[list.size()][]);
+    }
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        // here we creating new 2D array with one more size
+       int [][]a= new int[intervals.length+1][2];
+// here we copying
+       for(int i=0;i<intervals.length;i++){
+        a[i][0]=intervals[i][0];
+        a[i][1]=intervals[i][1];
+       }
+       // adding new intervals in last
+       a[intervals.length][0]=newInterval[0];
+        a[intervals.length][1]=newInterval[1];
+        // calling merge function here
+        return merge(a);
+    }
+}
